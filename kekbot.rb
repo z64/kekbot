@@ -210,6 +210,12 @@ bot.command(:give, min_args: 2,  description: "give currency") do |event, to, va
     return
   end
 
+  #handle negative values
+  if(value < 0)
+    event << "http://i.imgur.com/J1HocUj.png"
+    return
+  end
+
   #check if they have enough first
   if (fromUser["stipend"] - value) < 0
     event << "You do not have enough #{$db["currencyName"]} to make this transaction. :disappointed_relieved:"
@@ -570,6 +576,12 @@ bot.command(:sell, min_args: 3, description: "create a sale", usage: ".sell [des
   buyer_db = $db['users'][buyer.id.to_s]
   seller_db = $db['users'][seller.id.to_s]
   collectible = getCollectible(description)
+
+  #handle negative values
+  if(amount < 0)
+    event << "http://i.imgur.com/J1HocUj.png"
+    return
+  end
 
   #check collectible exists
   if collectible.nil?
