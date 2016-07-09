@@ -19,7 +19,7 @@ bot.ready do |event|
 
   message = ""
 
-  message << "Loaded database from **" + $db['timestamp'] + "** :file_folder: \n"
+  message << "Loaded database from **" + File.atime("kekdb.json") + "** :file_folder: \n"
 
   cmd = "git log --pretty=\"%h\" -n 1"
   rev = `#{cmd}`
@@ -46,6 +46,15 @@ bot.ready do |event|
     sleep 0.5
   end
 
+end
+
+# strip users that are unreachable to the bot.
+bot.heartbeat do
+  $db['collectibles'].each do |rare|
+    break unless rare['owner'].nil?
+    $db["users"].delete(rare['owner'].to_s) unless bot.user(rare['owner']).nil?
+    save
+  end
 end
 
 #restart bot
@@ -87,27 +96,27 @@ bot.command(:rev, description:"gets bot's HEAD revision") do |event|
   cmd = "git branch"
   branch = `#{cmd}`
 
-  event <<"Current branch:\n`#{branch}`"
+  event << "Current branch:\n`#{branch}`"
   event << "```#{log}```"
   event << "**https://github.com/z64/kekbot**"
 
 end
 
-bot.command(:log, min_args: 1, description:"gets n many rev logs") do |event, number|
+bot.command(:log, min_args: 1, description: "gets n many rev logs") do |event, number|
 
-  cmd = "git log --pretty=format:\"%h - %an, %ar : %s\" -n #{number}"
+  cmd = %q(git log --pretty=format:\"%h - %an, %ar : %s\" -n ) + number
   log = `#{cmd}`
 
   cmd = "git branch"
   branch = `#{cmd}`
 
-  event <<"Current branch: `#{branch}`"
+  event << "Current branch: `#{branch}`"
   event << "```#{log}```"
   event << "**https://github.com/z64/kekbot**"
 
 end
 
-bot.command(:getdb, description: "uploads the current databse file") do |event|
+bot.command(:getdb, description: "uploads the current database file") do |event|
   break unless event.channel.id == devChannel
 
   file = File.open('kekdb.json')
@@ -311,27 +320,24 @@ bot.command(:show, min_args: 1, description: "displays a rare, or tells you who 
   #get user
   user = $db["users"][event.user.id.to_s]
 
-  #look for our collectible, and do checks
+  # look for our collectible, and do checks
   collectible = getCollectible(description)
 
-  #check collectible doesn't exist, or is hidden
+  # check collectible doesn't exist, or is hidden
   if collectible.nil? | !collectible['data']['visible']
     event << "The #{$db["collectiblesName"]} `#{description}` doesn't exist, or isn't in your inventory."
     return
   end
 
-  #output the collectible if its ours
+  # output the collectible if its ours
   if !user['collectibles'].grep(collectible['id']).empty?
     event << "#{event.user.mention}\'s `#{description}`: "
     event << collectible['data']['url']
     return
   end
 
-  #don't show it if it exists, but is claimed by someone else
-  if !collectible['data']['owner'].nil?
-    event << "`#{description}` is a claimed #{$db["collectiblesName"]}! :eyes:"
-    return
-  end
+  # don't show it if it exists, but is claimed by someone else
+  event << "`#{description}` is a claimed #{$db["collectiblesName"]}! :eyes:" ; return unless !collectible['data']['owner'].nil?
 
   #its unclaimed at this point - tell the user how to claim it
   event << "`#{description}` is an unclaimed #{$db["collectiblesName"]}! :eyes:"
