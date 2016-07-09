@@ -37,3 +37,4 @@ build/
 
 # kekbot
 run.sh
+config.yaml
