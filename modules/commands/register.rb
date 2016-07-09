@@ -1,6 +1,7 @@
 module KekBot
   module Register
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     command(:register, description: "registers new user") do |event|
       #grab user id
       id = event.user.id.to_s

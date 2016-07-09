@@ -1,6 +1,7 @@
 module KekBot
   module Setstipend
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     command(:setstipend, min_args: 1, description: "sets all users stipend values") do |event, value|
       break unless event.channel.id == DEBUGCHANNEL
 

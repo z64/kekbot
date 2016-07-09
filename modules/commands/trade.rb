@@ -1,6 +1,7 @@
 module KekBot
   module Trade
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     command(:trade, description: "trade collectibles with other users", usage: ".trade @user [yourCollectible] / [theirCollectible]") do |event, *trade|
 
       #setup

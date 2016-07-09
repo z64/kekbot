@@ -1,7 +1,7 @@
 module KekBot
   module Submit
     extend Discordrb::Commands::CommandContainer
-    #add collectibles
+    extend Tools
     command(:submit, min_args: 2, description: "adds a rare to the $db", usage: ".submit [url] [description]") do |event, url, *description|
       description = description.join(' ')
 

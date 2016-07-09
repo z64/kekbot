@@ -1,6 +1,7 @@
 module KekBot
   module Reject
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     command(:reject, min_args: 1, description: "rejects a submission", usage: ".reject [description] --reason [optional reason]") do |event, *message|
       break unless event.channel.id == DEBUGCHANNEL
 

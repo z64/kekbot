@@ -1,6 +1,7 @@
 module KekBot
   module Sell
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     command(:sell, min_args: 3, description: "create a sale", usage: ".sell [description] @user [offer]") do |event, *sale|
 
       #setup

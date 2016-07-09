@@ -1,6 +1,8 @@
 module KekBot
   module Show
     extend Discordrb::Commands::CommandContainer
+    extend Tools
+    require_relative '../tools.rb'
     command(:show, min_args: 1, description: "displays a rare, or tells you who owns it", usage: ".show [description]") do |event, *description|
       description = description.join(' ')
 

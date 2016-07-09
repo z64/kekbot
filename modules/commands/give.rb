@@ -1,6 +1,7 @@
 module KekBot
   module Give
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     command(:give, min_args: 2,  description: "give currency") do |event, to, value|
       #convert value to integer
       value = value.to_i

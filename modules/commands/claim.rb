@@ -1,6 +1,7 @@
 module KekBot
   module Claim
     extend Discordrb::Commands::CommandContainer
+    extend Tools
     #claim collectible
     command(:claim, min_args: 1, description: "claims an unclaimed rare", usage: ".claim [description]") do |event, *description|
       description = description.join(' ')
